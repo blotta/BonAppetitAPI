@@ -4,6 +4,7 @@ using BonAppetitAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BonAppetitAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230901023914_RestaurantAndMenu")]
+    partial class RestaurantAndMenu
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,7 +112,7 @@ namespace BonAppetitAPI.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("Menus", (string)null);
+                    b.ToTable("Menus");
                 });
 
             modelBuilder.Entity("BonAppetitAPI.Models.MenuItem", b =>
@@ -129,6 +131,9 @@ namespace BonAppetitAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("MenuSectionId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -137,14 +142,11 @@ namespace BonAppetitAPI.Migrations
                         .HasPrecision(14, 2)
                         .HasColumnType("decimal(14,2)");
 
-                    b.Property<int>("RestaurantId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("RestaurantId");
+                    b.HasIndex("MenuSectionId");
 
-                    b.ToTable("MenuItems", (string)null);
+                    b.ToTable("MenuItems");
                 });
 
             modelBuilder.Entity("BonAppetitAPI.Models.MenuSection", b =>
@@ -170,7 +172,7 @@ namespace BonAppetitAPI.Migrations
 
                     b.HasIndex("MenuId");
 
-                    b.ToTable("MenuSections", (string)null);
+                    b.ToTable("MenuSections");
                 });
 
             modelBuilder.Entity("BonAppetitAPI.Models.Restaurant", b =>
@@ -193,22 +195,7 @@ namespace BonAppetitAPI.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Restaurants", (string)null);
-                });
-
-            modelBuilder.Entity("MenuItemMenuSection", b =>
-                {
-                    b.Property<int>("ItemsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MenuSectionsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ItemsId", "MenuSectionsId");
-
-                    b.HasIndex("MenuSectionsId");
-
-                    b.ToTable("MenuItemMenuSection", (string)null);
+                    b.ToTable("Restaurants");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -357,13 +344,9 @@ namespace BonAppetitAPI.Migrations
 
             modelBuilder.Entity("BonAppetitAPI.Models.MenuItem", b =>
                 {
-                    b.HasOne("BonAppetitAPI.Models.Restaurant", "Restaurant")
-                        .WithMany()
-                        .HasForeignKey("RestaurantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Restaurant");
+                    b.HasOne("BonAppetitAPI.Models.MenuSection", null)
+                        .WithMany("Items")
+                        .HasForeignKey("MenuSectionId");
                 });
 
             modelBuilder.Entity("BonAppetitAPI.Models.MenuSection", b =>
@@ -382,21 +365,6 @@ namespace BonAppetitAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("MenuItemMenuSection", b =>
-                {
-                    b.HasOne("BonAppetitAPI.Models.MenuItem", null)
-                        .WithMany()
-                        .HasForeignKey("ItemsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BonAppetitAPI.Models.MenuSection", null)
-                        .WithMany()
-                        .HasForeignKey("MenuSectionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -453,6 +421,11 @@ namespace BonAppetitAPI.Migrations
             modelBuilder.Entity("BonAppetitAPI.Models.Menu", b =>
                 {
                     b.Navigation("Sections");
+                });
+
+            modelBuilder.Entity("BonAppetitAPI.Models.MenuSection", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

@@ -12,5 +12,9 @@ namespace BonAppetitAPI.Data
         }
 
         public DbSet<ApplicationUser> Users { get; set; }
+        public DbSet<Restaurant> Restaurants { get; set; }
+        public DbSet<Menu> Menus { get; set; }
+        public DbSet<MenuSection> MenuSections { get; set; }
+        public DbSet<MenuItem> MenuItems { get; set; }
     }
 }

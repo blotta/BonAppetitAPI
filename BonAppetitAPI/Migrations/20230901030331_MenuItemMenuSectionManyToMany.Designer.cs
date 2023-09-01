@@ -4,6 +4,7 @@ using BonAppetitAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BonAppetitAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230901030331_MenuItemMenuSectionManyToMany")]
+    partial class MenuItemMenuSectionManyToMany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -110,7 +112,7 @@ namespace BonAppetitAPI.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("Menus", (string)null);
+                    b.ToTable("Menus");
                 });
 
             modelBuilder.Entity("BonAppetitAPI.Models.MenuItem", b =>
@@ -144,7 +146,7 @@ namespace BonAppetitAPI.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("MenuItems", (string)null);
+                    b.ToTable("MenuItems");
                 });
 
             modelBuilder.Entity("BonAppetitAPI.Models.MenuSection", b =>
@@ -170,7 +172,7 @@ namespace BonAppetitAPI.Migrations
 
                     b.HasIndex("MenuId");
 
-                    b.ToTable("MenuSections", (string)null);
+                    b.ToTable("MenuSections");
                 });
 
             modelBuilder.Entity("BonAppetitAPI.Models.Restaurant", b =>
@@ -193,7 +195,7 @@ namespace BonAppetitAPI.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Restaurants", (string)null);
+                    b.ToTable("Restaurants");
                 });
 
             modelBuilder.Entity("MenuItemMenuSection", b =>
@@ -208,7 +210,7 @@ namespace BonAppetitAPI.Migrations
 
                     b.HasIndex("MenuSectionsId");
 
-                    b.ToTable("MenuItemMenuSection", (string)null);
+                    b.ToTable("MenuItemMenuSection");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
