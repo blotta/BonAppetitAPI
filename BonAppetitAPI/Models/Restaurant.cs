@@ -16,7 +16,7 @@ namespace BonAppetitAPI.Models
         [Required]
         public string Address { get; set; }
 
-        public ICollection<Menu> Menus = new List<Menu>();
-        public ICollection<MenuItem> MenuItem = new List<MenuItem>();
+        public ICollection<Menu> Menus { get; set; } = new List<Menu>();
+        public ICollection<MenuItem> MenuItems { get; set; } = new List<MenuItem>();
     }
 }

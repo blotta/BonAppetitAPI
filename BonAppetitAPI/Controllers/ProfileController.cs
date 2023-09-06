@@ -52,10 +52,10 @@ namespace BonAppetitAPI.Controllers
         public async Task<IActionResult> CreateRestaurant(RestaurantCreateRequestDto requestDto)
         {
             var newRestaurantId = await _profileService.CreateRestaurant(requestDto);
-            return CreatedAtAction(nameof(Restaurant), new {id = newRestaurantId}, null);
+            return CreatedAtAction(nameof(Restaurant), new { id = newRestaurantId }, null);
         }
 
-        [HttpPost("restaurants/{id:int}")]
+        [HttpPut("restaurants/{id:int}")]
         public async Task<IActionResult> UpdateRestaurant([FromRoute] int id, [FromBody] RestaurantUpdateRequestDto request)
         {
             try
@@ -76,6 +76,73 @@ namespace BonAppetitAPI.Controllers
             try
             {
                 await this._profileService.DeleteRestaurant(id);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
+        [HttpGet("restaurants/{rid:int}/items")]
+        public async Task<IActionResult> RestaurantItems([FromRoute] int rid)
+        {
+            var rest = await _profileService.CurrentUserRestaurant(rid)
+                .Include(r => r.MenuItems)
+                .SingleOrDefaultAsync();
+
+            if (rest == null)
+                return BadRequest();
+
+            var items = _mapper.Map<IEnumerable<MenuItemReadDto>>(rest.MenuItems);
+
+            return Ok(items);
+        }
+
+        [HttpGet("restaurants/{rid:int}/items/{itemId:int}")]
+        public async Task<IActionResult> RestaurantItem([FromRoute] int rid, [FromRoute] int itemId)
+        {
+            var item = await _profileService.CurrentUserRestaurant(rid)
+                .SelectMany(r => r.MenuItems)
+                .SingleOrDefaultAsync(i => i.Id == itemId);
+
+            if (item == null)
+                return NotFound();
+
+            var resp = _mapper.Map<MenuItemReadDto>(item);
+
+            return Ok(resp);
+        }
+
+        [HttpPost("restaurants/{rid:int}/items")]
+        public async Task<IActionResult> RestaurantAddItem([FromRoute] int rid, [FromBody] MenuItemCreateRequestDto request)
+        {
+            var newItemId = await this._profileService.CreateRestaurantItem(rid, request);
+            return CreatedAtAction(nameof(RestaurantItem), new { rid = rid, itemId = newItemId }, null);
+        }
+
+        [HttpPut("restaurants/{rid:int}/items/{itemId:int}")]
+        public async Task<IActionResult> UpdateRestaurantItem([FromRoute] int rid, [FromRoute] int itemId, [FromBody] MenuItemUpdateRequestDto request)
+        {
+            try
+            {
+                await this._profileService.UpdateRestaurantItem(rid, itemId, request);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+
+            return Ok();
+        }
+
+        [HttpDelete("restaurants/{rid:int}/items/{itemId:int}")]
+        public async Task<IActionResult> DeleteRestaurantItem([FromRoute] int rid, [FromRoute] int itemId)
+        {
+            try
+            {
+                await this._profileService.DeleteRestaurantItem(rid, itemId);
             }
             catch (Exception)
             {

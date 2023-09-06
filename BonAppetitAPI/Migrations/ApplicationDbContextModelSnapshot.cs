@@ -110,7 +110,7 @@ namespace BonAppetitAPI.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("Menus");
+                    b.ToTable("Menus", (string)null);
                 });
 
             modelBuilder.Entity("BonAppetitAPI.Models.MenuItem", b =>
@@ -144,7 +144,7 @@ namespace BonAppetitAPI.Migrations
 
                     b.HasIndex("RestaurantId");
 
-                    b.ToTable("MenuItems");
+                    b.ToTable("MenuItems", (string)null);
                 });
 
             modelBuilder.Entity("BonAppetitAPI.Models.MenuSection", b =>
@@ -170,7 +170,7 @@ namespace BonAppetitAPI.Migrations
 
                     b.HasIndex("MenuId");
 
-                    b.ToTable("MenuSections");
+                    b.ToTable("MenuSections", (string)null);
                 });
 
             modelBuilder.Entity("BonAppetitAPI.Models.Restaurant", b =>
@@ -197,7 +197,7 @@ namespace BonAppetitAPI.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Restaurants");
+                    b.ToTable("Restaurants", (string)null);
                 });
 
             modelBuilder.Entity("MenuItemMenuSection", b =>
@@ -212,7 +212,7 @@ namespace BonAppetitAPI.Migrations
 
                     b.HasIndex("MenuSectionsId");
 
-                    b.ToTable("MenuItemMenuSection");
+                    b.ToTable("MenuItemMenuSection", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

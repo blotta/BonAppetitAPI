@@ -55,6 +55,13 @@ namespace BonAppetitAPI.Services
             return CurrentUser().Include(u => u.Restaurants).SelectMany(u => u.Restaurants).AsQueryable();
         }
 
+        public IQueryable<Restaurant> CurrentUserRestaurant(int rid)
+        {
+            var userId = GetUserId();
+            return _context.Restaurants.Where(r => r.Owner.Id == userId && r.Id == rid);
+            // return CurrentUser().Include(u => u.Restaurants).SelectMany(u => u.Restaurants).Single(r => r.Id == rid).AsQueryable();
+        }
+
         public async Task UpdateRestaurant(int id, RestaurantUpdateRequestDto dto)
         {
             var rest = await this.CurrentUserRestaurants().SingleOrDefaultAsync(r => r.Id == id);
@@ -72,6 +79,36 @@ namespace BonAppetitAPI.Services
                 throw new Exception("Restaurante Inválido");
 
             _context.Restaurants.Remove(rest);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> CreateRestaurantItem(int restaurantId, MenuItemCreateRequestDto dto)
+        {
+            var rest = await CurrentUserRestaurants().Include(u => u.MenuItems).SingleAsync(r => r.Id == restaurantId);
+            var newItem = _mapper.Map<MenuItem>(dto);
+            rest.MenuItems.Add(newItem);
+            await _context.SaveChangesAsync();
+            await _context.Entry(newItem).ReloadAsync();
+            return newItem.Id;
+        }
+
+        public async Task UpdateRestaurantItem(int restaurantId, int itemId, MenuItemUpdateRequestDto dto)
+        {
+            var item = await CurrentUserRestaurant(restaurantId).SelectMany(r => r.MenuItems).SingleOrDefaultAsync(i => i.Id == itemId);
+            if (item == null)
+                throw new Exception("Item Inválido");
+
+            _mapper.Map(dto, item);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteRestaurantItem(int restaurantId, int itemId)
+        {
+            var item = await CurrentUserRestaurant(restaurantId).SelectMany(u => u.MenuItems).SingleOrDefaultAsync(i => i.Id == itemId);
+            if (item == null)
+                throw new Exception("Item Inválido");
+
+            _context.MenuItems.Remove(item);
             await _context.SaveChangesAsync();
         }
     }
