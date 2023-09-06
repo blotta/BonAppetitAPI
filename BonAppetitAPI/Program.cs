@@ -50,22 +50,41 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
 // Application services
 builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddTransient<ProfileService>();
 
 builder.Services.AddControllers();
+// .ConfigureApiBehaviorOptions(options =>
+// {
+//     options.SuppressMapClientErrors = true;
+// });
+builder.Services.AddHttpContextAccessor();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+//app.UseExceptionHandler();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseExceptionHandler("/error-development");
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseExceptionHandler("/error");
+}
+
+app.UseStatusCodePages();
 
 app.UseHttpsRedirection();
 

@@ -7,5 +7,7 @@ namespace BonAppetitAPI.Models
         public ApplicationUser() : base() { }
 
         public string Name { get; set; }
+
+        public ICollection<Restaurant> Restaurants { get; set;} = new List<Restaurant>();
     }
 }
