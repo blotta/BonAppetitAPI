@@ -52,6 +52,11 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("allowedOrigin", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+});
+
 
 // Application services
 builder.Services.AddTransient<IAuthService, AuthService>();
@@ -84,9 +89,11 @@ else
     app.UseExceptionHandler("/error");
 }
 
+app.UseCors("allowedOrigin");
 app.UseStatusCodePages();
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+    app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
